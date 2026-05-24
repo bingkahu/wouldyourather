@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Feed — Would You Rather</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.feed{height:80vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.card.feed-card{width:100%;max-width:420px;height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+</style>
+</head>
+<body>
+<main class="container">
+  <section id="feed" class="feed">
+    <!-- cards will be injected -->
+  </section>
+</main>
+<script>
+let feedSeen = JSON.parse(localStorage.getItem('feed_seen') || '[]');
+let loading = false;
+async function loadMore(limit=5){
+  if (loading) return;
+  loading = true;
+  const res = await fetch('/api/feed', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ seen: feedSeen, limit }) });
+  const data = await res.json();
+  (data.questions || []).forEach(q => addCard(q));
+  loading = false;
+}
+function addCard(q){
+  feedSeen.push(q.id);
+  localStorage.setItem('feed_seen', JSON.stringify(feedSeen));
+  const container = document.getElementById('feed');
+  const card = document.createElement('section');
+  card.className = 'card feed-card';
+  card.innerHTML = `<div class="category">${q.category}</div><h3>${q.option_a} OR ${q.option_b}</h3>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn" data-id="${q.id}" data-choice="a">A</button>
+      <button class="btn" data-id="${q.id}" data-choice="b">B</button>
+      <button class="link-btn" data-skip="${q.id}">Skip</button>
+    </div>`;
+  container.appendChild(card);
+  card.scrollIntoView({behavior:'smooth'});
+  card.querySelectorAll('button[data-choice]').forEach(b=>{
+    b.addEventListener('click', async (e)=>{
+      const id = b.getAttribute('data-id');
+      const choice = b.getAttribute('data-choice');
+      await fetch('/api/vote', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question_id: id, choice }) });
+      card.remove();
+      if (document.querySelectorAll('.feed-card').length < 3) loadMore();
+    });
+  });
+  card.querySelectorAll('button[data-skip]').forEach(s=>{
+    s.addEventListener('click', async ()=>{
+      const id = s.getAttribute('data-skip');
+      await fetch('/api/skip', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question_id: id }) });
+      card.remove();
+      if (document.querySelectorAll('.feed-card').length < 3) loadMore();
+    });
+  });
+}
+window.addEventListener('scroll', ()=>{
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) loadMore();
+});
+loadMore(6);
+</script>
+</body>
+</html>
