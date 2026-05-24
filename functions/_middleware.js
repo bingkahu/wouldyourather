@@ -4,8 +4,15 @@
 
 export async function onRequest(context) {
   const { request, env } = context;
+  const url = new URL(request.url);
+  const path = normalizePath(url.pathname);
+  // Let Pages serve static files for non-API routes
+  if (!path.startsWith("/api")) {
+    return await context.next();
+  }
+
   try {
-    return await handleRequest(request, env, context);
+    return await handleApi(request, env, context);
   } catch (err) {
     return jsonResponse({ error: "Server error", detail: String(err) }, 500);
   }
@@ -39,7 +46,7 @@ function makeCookie(name, value, opts = {}) {
 
 function normalizePath(pathname) {
   // remove trailing slashes except keep single "/" for root
-  return pathname.replace(/\/+$/, "") || "/";
+  return (pathname || "/").replace(/\/+$/, "") || "/";
 }
 
 function getCookieValue(request, name) {
@@ -64,21 +71,16 @@ async function getUserFromSession(request, env) {
 }
 
 /* -----------------------
-   Router
+   Router (API)
 ----------------------- */
 
-async function handleRequest(request, env, context) {
+async function handleApi(request, env, context) {
   const url = new URL(request.url);
   const rawPath = url.pathname;
   const path = normalizePath(rawPath);
   const method = request.method.toUpperCase();
 
-  // Only handle API routes here; let Pages serve static files
-  if (!path.startsWith("/api")) {
-    return new Response(null, { status: 404 });
-  }
-
-  // Use flexible matching to tolerate trailing slashes and query strings
+  // Flexible matching to tolerate trailing slashes and query strings
   try {
     if (path.startsWith("/api/signup") && method === "POST") return signup(request, env);
     if (path.startsWith("/api/login") && method === "POST") return login(request, env);
