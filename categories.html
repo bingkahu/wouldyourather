@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Categories — Would You Rather</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="container">
+  <section class="card">
+    <h2>Categories</h2>
+    <div id="cats" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+  </section>
+</main>
+<script>
+async function loadCats(){
+  const res = await fetch('/api/categories');
+  const data = await res.json();
+  const el = document.getElementById('cats');
+  (data.categories || []).forEach(c=>{
+    const a = document.createElement('a');
+    a.href = `/index.html?category=${encodeURIComponent(c)}`;
+    a.className = 'btn small';
+    a.textContent = c;
+    el.appendChild(a);
+  });
+}
+loadCats();
+</script>
+</body>
+</html>
