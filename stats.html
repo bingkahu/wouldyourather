@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leaderboard — Would You Rather</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="container">
+  <section class="card">
+    <h2>Leaderboard</h2>
+    <table id="leaderboard" style="width:100%;border-collapse:collapse">
+      <thead><tr><th>#</th><th>User</th><th>Answered</th><th>Streak</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+<script>
+async function load() {
+  const res = await fetch('/api/leaderboard');
+  const data = await res.json();
+  const tbody = document.querySelector('#leaderboard tbody');
+  tbody.innerHTML = '';
+  (data.leaderboard || []).forEach((u,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${u.username}</td><td>${u.total_answered}</td><td>${u.streak}</td>`;
+    tr.style.transition = 'transform 300ms';
+    tbody.appendChild(tr);
+    setTimeout(()=> tr.style.transform = 'translateX(0)', 50);
+  });
+}
+load();
+</script>
+</body>
+</html>
