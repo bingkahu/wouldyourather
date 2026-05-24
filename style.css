@@ -1,93 +1,485 @@
+/* ==========================================================================
+   WouldYouRather - Unified style.css
+   Single-file stylesheet (expanded) - Matteo
+   - Modern, responsive, accessible UI
+   - Includes theme variables, components, utilities, animations
+   - Drop into site root and link with: <link rel="stylesheet" href="/style.css">
+   ========================================================================== */
+
+/* =========================
+   Theme variables
+   ========================= */
 :root{
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --text:#111827;
-  --muted:#6b7280;
-  --accent:#6366f1;
-  --radius:14px;
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #6366f1;
+  --accent-2: #4f46e5;
+  --accent-3: #0ea5ff;
+  --success: #16a34a;
+  --danger: #ef4444;
+  --glass: rgba(255,255,255,0.6);
+  --radius: 14px;
   --shadow: 0 6px 18px rgba(16,24,40,0.08);
-  --transition:300ms cubic-bezier(.2,.9,.3,1);
+  --soft-shadow: 0 4px 12px rgba(16,24,40,0.06);
+  --transition: 300ms cubic-bezier(.2,.9,.3,1);
+  --max-width: 980px;
+  --gap: 14px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  --ui: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --z-top: 9999;
+  --focus-ring: rgba(99,102,241,0.12);
 }
 
+/* Dark theme variables */
 [data-theme="dark"]{
-  --bg:#0b1020;
-  --card:#0f1724;
-  --text:#e6eef8;
-  --muted:#9aa6bf;
-  --accent:#7c3aed;
+  --bg: #0b1020;
+  --card: #0f1724;
+  --text: #e6eef8;
+  --muted: #9aa6bf;
+  --accent: #7c3aed;
+  --accent-2: #6d28d9;
+  --accent-3: #0ea5ff;
+  --glass: rgba(255,255,255,0.04);
   --shadow: 0 6px 18px rgba(2,6,23,0.6);
+  --soft-shadow: 0 6px 14px rgba(2,6,23,0.5);
+  --focus-ring: rgba(124,58,237,0.12);
 }
 
+/* =========================
+   Reset and base
+   ========================= */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  font-family:var(--ui);
   background:linear-gradient(180deg,var(--bg),#fff);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
   transition:background var(--transition), color var(--transition);
-  padding:16px;
-}
-
-.topbar{
+  padding:20px;
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  margin-bottom:16px;
+  justify-content:center;
+  line-height:1.45;
+  -webkit-tap-highlight-color: transparent;
 }
-.topbar h1{font-size:1.1rem;margin:0}
-.topbar .controls{display:flex;gap:8px;align-items:center}
 
-.container{max-width:720px;margin:0 auto}
+/* Remove default button styles */
+button{font-family:inherit}
 
+/* =========================
+   Layout container
+   ========================= */
+.container{
+  width:100%;
+  max-width:var(--max-width);
+  margin:0 auto;
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:28px;
+  align-items:start;
+  align-content:start;
+}
+@media (max-width:980px){
+  .container{grid-template-columns:1fr; padding:0 12px}
+}
+
+/* =========================
+   Header and topbar
+   ========================= */
+.header, .topbar{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.logo{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;font-family:var(--mono);
+  box-shadow:var(--shadow);
+}
+.site-title{font-size:1.05rem;font-weight:700}
+.site-sub{font-size:0.85rem;color:var(--muted)}
+
+/* Top actions */
+.actions{display:flex;gap:8px;align-items:center}
+.link{color:var(--muted);text-decoration:none;font-weight:600}
+
+/* =========================
+   Buttons
+   ========================= */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;
+  background:transparent;color:var(--text);border:1px solid rgba(0,0,0,0.06);cursor:pointer;font-weight:700;
+  transition:transform .08s ease, box-shadow .12s ease, background var(--transition);
+  text-decoration:none;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:white;border:none;box-shadow:0 8px 30px rgba(79,70,229,0.12);
+}
+.btn.ghost{background:transparent;border:1px dashed rgba(0,0,0,0.06)}
+.btn.small{padding:6px 10px;font-size:0.95rem}
+
+/* Icon button */
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);
+  background:transparent;cursor:pointer;
+}
+.icon-btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:none}
+
+/* =========================
+   Card component
+   ========================= */
 .card{
   background:var(--card);
   border-radius:var(--radius);
+  padding:16px;
   box-shadow:var(--shadow);
-  padding:20px;
-  transition:transform var(--transition), box-shadow var(--transition), background var(--transition);
-  overflow:hidden;
+  border:1px solid rgba(0,0,0,0.03);
 }
-.fade-in{animation:fadeIn 400ms ease both}
+.card h3{margin:0 0 8px 0;font-size:1.05rem}
+.muted{color:var(--muted);font-size:0.95rem}
+
+/* =========================
+   Main and sidebar
+   ========================= */
+.main{display:flex;flex-direction:column;gap:var(--gap)}
+.sidebar{position:sticky;top:24px;display:flex;flex-direction:column;gap:var(--gap)}
+
+/* =========================
+   Question UI
+   ========================= */
+.question-box{display:flex;flex-direction:column;gap:12px}
+.category{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,0.03);color:var(--muted);font-weight:700;font-size:0.85rem}
+.question-text{font-size:1.2rem;font-weight:800;margin:6px 0;color:var(--text)}
+
+/* Options grid */
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){ .options{grid-template-columns:1fr} }
+
+.option-btn{
+  padding:14px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);
+  border:1px solid rgba(0,0,0,0.04);color:var(--text);font-weight:800;cursor:pointer;text-align:center;
+  transition:transform .08s ease, box-shadow .12s ease;
+}
+.option-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(2,6,23,0.06)}
+.option-btn.secondary{background:transparent;border:1px dashed rgba(0,0,0,0.04);font-weight:700}
+
+/* Option states */
+.option-btn.selected{outline:3px solid rgba(99,102,241,0.12);transform:none}
+.option-btn.disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+/* =========================
+   Progress bars and percentages
+   ========================= */
+.progress-row{display:flex;gap:8px;align-items:center}
+.progress-bar{height:10px;background:rgba(0,0,0,0.04);border-radius:999px;overflow:hidden;flex:1}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+.percent-label{min-width:48px;text-align:right;font-weight:700;color:var(--muted)}
+
+/* Large percent bar for results */
+.result-bar{height:36px;border-radius:10px;overflow:hidden;display:flex}
+.result-fill{display:flex;align-items:center;justify-content:center;color:white;font-weight:800;min-width:40px}
+
+/* =========================
+   Controls and small UI
+   ========================= */
+.controls{display:flex;gap:8px;align-items:center;margin-top:6px}
+.small{font-size:0.9rem}
+.kv{display:flex;justify-content:space-between;gap:8px;align-items:center}
+
+/* =========================
+   Leaderboard styles
+   ========================= */
+.leaderboard .table{width:100%;border-collapse:collapse;font-size:0.95rem}
+.table th,.table td{padding:10px 8px;border-bottom:1px solid rgba(0,0,0,0.03)}
+.table th{color:var(--muted);font-weight:700;text-align:left}
+.table tr:hover td{background:linear-gradient(90deg, rgba(0,0,0,0.01), transparent)}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(0,0,0,0.03);font-weight:800}
+
+/* Highlight top ranks */
+.rank.gold{background:linear-gradient(90deg,#ffd166,#ffb703);color:#111}
+.rank.silver{background:linear-gradient(90deg,#e6e6e6,#cfcfcf);color:#111}
+.rank.bronze{background:linear-gradient(90deg,#f4a261,#e76f51);color:#111}
+
+/* =========================
+   Forms and auth
+   ========================= */
+.form{display:flex;flex-direction:column;gap:10px}
+.input, textarea, select{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:transparent;color:var(--text);outline:none;
+  transition:box-shadow .12s ease, border-color .12s ease;
+}
+.input:focus, textarea:focus, select:focus{
+  box-shadow:0 6px 20px rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.5);
+}
+.form-row{display:flex;gap:8px}
+.form-row .input{flex:1}
+.auth{max-width:420px;margin:0 auto}
+.help{font-size:0.9rem;color:var(--muted)}
+
+/* Form validation states */
+.input.error{border-color:var(--danger);box-shadow:0 6px 20px rgba(239,68,68,0.06)}
+.input.success{border-color:var(--success);box-shadow:0 6px 20px rgba(16,185,129,0.06)}
+.field-note{font-size:0.85rem;color:var(--muted)}
+
+/* =========================
+   Progress page cards
+   ========================= */
+.progress-card{border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(0,0,0,0.01),transparent);border:1px solid rgba(0,0,0,0.03)}
+.progress-card .question{font-weight:700}
+
+/* =========================
+   Submissions and admin
+   ========================= */
+.submission-list{display:flex;flex-direction:column;gap:10px}
+.submission-item{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:10px;background:var(--card);border:1px solid rgba(0,0,0,0.03)}
+.submission-meta{color:var(--muted);font-size:0.9rem}
+.submission-actions{margin-left:auto;display:flex;gap:8px}
+
+/* =========================
+   Modal
+   ========================= */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;z-index:var(--z-top);
+}
+.modal{
+  width:100%;max-width:720px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.6);
+}
+.modal .modal-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.modal .modal-body{max-height:60vh;overflow:auto}
+
+/* =========================
+   Toast / notifications
+   ========================= */
+.toast{
+  position:fixed;right:20px;bottom:20px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(79,70,229,0.12);z-index:var(--z-top);
+}
+.toast.error{background:linear-gradient(90deg,#ef4444,#f97316)}
+.toast.success{background:linear-gradient(90deg,#16a34a,#4ade80)}
+
+/* =========================
+   Footer
+   ========================= */
+.footer{grid-column:1 / -1;margin-top:18px;color:var(--muted);font-size:0.9rem;text-align:center}
+
+/* =========================
+   Accessibility focus
+   ========================= */
+:focus{outline:3px solid var(--focus-ring);outline-offset:2px}
+
+/* =========================
+   Animations
+   ========================= */
+.fade-in{animation:fadeIn 420ms cubic-bezier(.2,.9,.3,1) both}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slide-up{animation:slideUp 360ms cubic-bezier(.2,.9,.3,1) both}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pulse{animation:pulse 1600ms infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
 
-.category{font-size:0.8rem;color:var(--muted);margin-bottom:8px}
-.question{font-size:1.25rem;margin:0 0 16px 0}
+/* =========================
+   Utilities - spacing, text, layout
+   ========================= */
+.mt-6{margin-top:6px}
+.mb-6{margin-bottom:6px}
+.p-6{padding:6px}
+.text-center{text-align:center}
+.text-right{text-align:right}
+.flex{display:flex}
+.flex-col{display:flex;flex-direction:column}
+.items-center{align-items:center}
+.justify-center{justify-content:center}
+.hidden{display:none !important}
+.visible{display:block !important}
 
-.options{display:flex;flex-direction:column;gap:12px}
-.option{
-  padding:14px 16px;
-  border-radius:12px;
-  border:1px solid rgba(0,0,0,0.06);
-  background:linear-gradient(180deg,rgba(255,255,255,0.6),transparent);
-  cursor:pointer;
-  font-weight:600;
-  transition:transform 160ms ease, box-shadow 160ms ease;
+/* Grid helpers */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){ .grid-3{grid-template-columns:1fr} }
+
+/* =========================
+   Table styles
+   ========================= */
+.table-basic{width:100%;border-collapse:collapse}
+.table-basic th,.table-basic td{padding:10px;border-bottom:1px solid rgba(0,0,0,0.04)}
+.table-basic th{background:transparent;color:var(--muted);font-weight:700;text-align:left}
+
+/* =========================
+   Search input
+   ========================= */
+.search{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--card);border:1px solid rgba(0,0,0,0.04);
 }
-.option:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.08)}
-.option:active{transform:translateY(0) scale(.995)}
+.search .input{border:none;background:transparent;padding:8px 6px}
 
-.btn{background:var(--accent);color:white;border:none}
-.btn.small{padding:8px 12px;border-radius:10px}
+/* =========================
+   Empty state
+   ========================= */
+.empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0.01),transparent);border:1px solid rgba(0,0,0,0.03)
+}
+.empty h4{margin:0 0 8px 0}
+.empty p{margin:0;color:var(--muted)}
 
-.meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.link-btn{background:none;border:none;color:var(--accent);cursor:pointer;font-weight:600}
+/* =========================
+   Badges and labels
+   ========================= */
+.badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.03);color:var(--muted);font-weight:700}
+.label{font-size:0.85rem;color:var(--muted)}
 
-.percent-bar{display:flex;margin-top:12px;height:36px;border-radius:10px;overflow:hidden;background:rgba(0,0,0,0.04)}
-.percent{display:flex;align-items:center;justify-content:center;font-weight:700;color:white;min-width:40px}
-.percent.a{background:linear-gradient(90deg,var(--accent),#4f46e5)}
-.percent.b{background:linear-gradient(90deg,#ef4444,#f97316)}
+/* =========================
+   Avatar
+   ========================= */
+.avatar{
+  width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;font-family:var(--mono)
+}
+.avatar.small{width:32px;height:32px;border-radius:8px;font-size:0.85rem}
 
-.controls-bottom{display:flex;gap:8px;justify-content:center;margin-top:16px}
-
-.link{color:var(--muted);text-decoration:none;font-weight:600}
-
-@media(min-width:700px){
-  .options{flex-direction:row}
-  .option{flex:1}
+/* =========================
+   Responsive tweaks
+   ========================= */
+@media (max-width:700px){
+  .options{grid-template-columns:1fr}
+  .container{padding:0 12px}
+  .logo{width:40px;height:40px}
+  .sidebar{position:static}
 }
 
-/* Smooth transitions for theme */
-*{transition:background-color var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition)}
+/* =========================
+   Advanced components - timeline
+   ========================= */
+.timeline{position:relative;padding-left:20px;border-left:2px dashed rgba(0,0,0,0.04)}
+.timeline-item{position:relative;padding:12px 0}
+.timeline-item:before{content:"";position:absolute;left:-11px;top:12px;width:18px;height:18px;border-radius:50%;background:var(--card);border:3px solid var(--accent);box-shadow:var(--soft-shadow)}
+
+/* =========================
+   Advanced components - cards with actions
+   ========================= */
+.card-actions{display:flex;gap:8px;align-items:center;margin-top:12px}
+.card .meta{color:var(--muted);font-size:0.9rem}
+
+/* =========================
+   Accessibility helpers
+   ========================= */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* =========================
+   Debug helpers (remove in production)
+   ========================= */
+.debug-outline *{outline:1px dashed rgba(255,0,0,0.06)}
+
+/* =========================
+   Form layout helpers
+   ========================= */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){ .form-grid{grid-template-columns:1fr} }
+
+/* =========================
+   Buttons - variations
+   ========================= */
+.btn.ghost-light{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+.btn.link{background:transparent;border:none;color:var(--accent);padding:6px}
+
+/* =========================
+   Tiny UI polish - hover states
+   ========================= */
+.hover-lift:hover{transform:translateY(-4px);box-shadow:var(--soft-shadow)}
+.fade-on-hover{transition:opacity .12s ease}
+.fade-on-hover:hover{opacity:0.95}
+
+/* =========================
+   Percent bar helpers for results
+   ========================= */
+.result-row{display:flex;gap:8px;align-items:center}
+.result-left{flex:1;display:flex;gap:8px;align-items:center}
+.result-right{min-width:120px;text-align:right;color:var(--muted)}
+
+/* =========================
+   Color utility classes
+   ========================= */
+.text-accent{color:var(--accent)}
+.text-muted{color:var(--muted)}
+.bg-accent{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+
+/* =========================
+   Large hero / landing styles
+   ========================= */
+.hero{
+  display:flex;align-items:center;justify-content:space-between;padding:28px;border-radius:16px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);
+  box-shadow:var(--soft-shadow);
+}
+.hero .left{max-width:60%}
+.hero h1{margin:0;font-size:1.6rem}
+.hero p{margin:8px 0 0 0;color:var(--muted)}
+
+/* =========================
+   Misc - code block styling
+   ========================= */
+.code{
+  font-family:var(--mono);
+  background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);
+  padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.03);overflow:auto;font-size:0.9rem;
+}
+
+/* =========================
+   Form submit spinner
+   ========================= */
+.spinner{
+  width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);border-top-color:var(--accent);animation:spin 900ms linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* =========================
+   Large-screen layout tweaks
+   ========================= */
+@media (min-width:1200px){
+  .container{grid-template-columns: 1fr 420px}
+  .hero .left{max-width:55%}
+}
+
+/* =========================
+   Print styles
+   ========================= */
+@media print{
+  body{background:white;color:black;padding:0}
+  .container{max-width:100%}
+  .card{box-shadow:none;border:none}
+  .no-print{display:none}
+}
+
+/* =========================
+   End of file - utilities and extras
+   ========================= */
+
+/* Extra spacing utilities */
+.mt-12{margin-top:12px}
+.mt-24{margin-top:24px}
+.mb-12{margin-bottom:12px}
+.mb-24{margin-bottom:24px}
+.p-12{padding:12px}
+.p-24{padding:24px}
+
+/* Extra text utilities */
+.text-xs{font-size:0.8rem}
+.text-sm{font-size:0.9rem}
+.text-lg{font-size:1.1rem}
+.text-xl{font-size:1.25rem}
+
+/* Final accessibility tweak */
+:root{--reduced-motion:0}
+@media (prefers-reduced-motion: reduce){
+  :root{--reduced-motion:1}
+  *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;scroll-behavior:auto !important}
+}
+
+/* EOF */
