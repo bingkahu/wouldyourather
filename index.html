@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Would You Rather — Random Questions</title>
+<meta name="description" content="Play Would You Rather. Vote, skip, share, and track your streak.">
+<meta property="og:title" content="Would You Rather">
+<meta property="og:description" content="Play Would You Rather. Vote, skip, share, and track your streak.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>Would You Rather</h1>
+  <div class="controls">
+    <button id="darkToggle" aria-label="Toggle dark mode">🌓</button>
+    <a href="/feed.html" class="link">Feed</a>
+    <a href="/stats.html" class="link">Leaderboard</a>
+    <a href="/login.html" class="link" id="authLink">Login</a>
+  </div>
+</header>
+
+<main class="container">
+  <section id="card" class="card fade-in">
+    <div id="category" class="category">General</div>
+    <h2 id="questionText" class="question">Loading...</h2>
+    <div class="options">
+      <button id="btnA" class="option btn">Option A</button>
+      <button id="btnB" class="option btn">Option B</button>
+    </div>
+    <div class="meta">
+      <button id="skipBtn" class="link-btn">Skip</button>
+      <button id="shareBtn" class="link-btn">Share</button>
+    </div>
+    <div id="percentBar" class="percent-bar">
+      <div id="percentA" class="percent a">0%</div>
+      <div id="percentB" class="percent b">0%</div>
+    </div>
+    <!-- AD SLOT -->
+    <!-- <div class="ad-slot">Ad placeholder</div> -->
+  </section>
+
+  <div class="controls-bottom">
+    <a href="/submit.html" class="btn small">Submit a Question</a>
+    <a href="/categories.html" class="btn small">Categories</a>
+  </div>
+</main>
+
+<script src="/script.js" defer></script>
+</body>
+</html>
