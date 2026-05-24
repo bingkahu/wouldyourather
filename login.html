@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login — Would You Rather</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="container">
+  <section class="card">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label>Username<input name="username" required></label>
+      <label>Password<input name="password" type="password" required></label>
+      <div style="margin-top:12px">
+        <button class="btn" type="submit">Login</button>
+        <a href="/signup.html" class="link" style="margin-left:12px">Sign up</a>
+      </div>
+    </form>
+  </section>
+</main>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const f = e.target;
+  const data = { username: f.username.value, password: f.password.value };
+  const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  const json = await res.json();
+  if (json.success) location.href = '/';
+  else alert(json.error || 'Login failed');
+});
+</script>
+</body>
+</html>
