@@ -2,52 +2,73 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Leaderboard</title>
+  <title>Your Progress</title>
   <style>
     body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:20px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;border-bottom:1px solid #eee}
-    th{text-align:left}
-    .muted{color:#666;font-size:0.95rem}
+    .muted{color:#666}
+    .card{border:1px solid #eee;padding:12px;border-radius:6px;margin-bottom:10px}
+    .question{font-weight:600}
+    .choice{color:#0a84ff}
   </style>
 </head>
 <body>
-  <h2>Leaderboard</h2>
-  <div id="loading" class="muted">Loading…</div>
-  <table id="table" style="display:none">
-    <thead><tr><th>Rank</th><th>User</th><th style="text-align:right">Answered</th><th style="text-align:right">Streak</th></tr></thead>
-    <tbody id="body"></tbody>
-  </table>
+  <h2>Your Progress</h2>
+  <div id="status" class="muted">Checking session…</div>
+  <div id="content" style="display:none">
+    <div id="seen-list"></div>
+  </div>
 
   <script>
-    async function load() {
-      const loading = document.getElementById('loading');
-      const table = document.getElementById('table');
-      const body = document.getElementById('body');
+    async function loadProgress() {
+      const status = document.getElementById('status');
+      const content = document.getElementById('content');
+      const seenList = document.getElementById('seen-list');
+
       try {
-        const res = await fetch('/api/leaderboard');
-        if (!res.ok) throw new Error('Network error');
+        const res = await fetch('/api/progress', { credentials: 'include' });
+        if (!res.ok) {
+          if (res.status === 401) {
+            status.textContent = 'You are not logged in. Log in to see your progress.';
+            return;
+          }
+          throw new Error('Network error');
+        }
         const data = await res.json();
-        const list = data.leaderboard || [];
-        if (list.length === 0) {
-          loading.textContent = 'No leaderboard data yet.';
+        const answers = data.answers || [];
+        if (answers.length === 0) {
+          status.textContent = 'No answers recorded yet.';
           return;
         }
-        body.innerHTML = '';
-        list.forEach((r,i) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(r.username||'—')}</td><td style="text-align:right">${r.total_answered||0}</td><td style="text-align:right">${r.streak||0}</td>`;
-          body.appendChild(tr);
-        });
-        loading.style.display = 'none';
-        table.style.display = 'table';
-      } catch (e) {
-        loading.textContent = 'Failed to load leaderboard.';
-        console.error(e);
+
+        status.style.display = 'none';
+        content.style.display = 'block';
+        seenList.innerHTML = '';
+
+        // For each answer, fetch the question text (best-effort)
+        for (const a of answers) {
+          const qRes = await fetch(`/api/stats`); // stats endpoint returns questions list
+          const qData = await qRes.json();
+          const q = (qData.questions || []).find(x => x.id === a.question_id) || null;
+          const optionText = a.choice === 'a' ? (q?.option_a || 'Option A') : (q?.option_b || 'Option B');
+
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.innerHTML = `
+            <div class="question">${escapeHtml(q?.option_a || 'Option A')} <span class="muted">vs</span> ${escapeHtml(q?.option_b || 'Option B')}</div>
+            <div class="muted">Answered: <span class="choice">${escapeHtml(optionText)}</span></div>
+            <div class="muted">At: ${escapeHtml(a.created_at || '')}</div>
+          `;
+          seenList.appendChild(div);
+        }
+      } catch (err) {
+        status.textContent = 'Failed to load progress.';
+        console.error(err);
       }
     }
+
     function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-    document.addEventListener('DOMContentLoaded', load);
+
+    document.addEventListener('DOMContentLoaded', loadProgress);
   </script>
 </body>
 </html>
